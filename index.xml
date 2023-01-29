@@ -5,7 +5,32 @@
     <link>https://t-mac01.github.io/blog/</link>
     <description>Recent content on Jiao</description>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Sun, 29 Jan 2023 21:16:41 +0800</lastBuildDate><atom:link href="https://t-mac01.github.io/blog/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 29 Jan 2023 23:10:26 +0800</lastBuildDate><atom:link href="https://t-mac01.github.io/blog/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>分布式任务</title>
+      <link>https://t-mac01.github.io/blog/post/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BB%BB%E5%8A%A1/</link>
+      <pubDate>Sun, 29 Jan 2023 23:10:26 +0800</pubDate>
+      
+      <guid>https://t-mac01.github.io/blog/post/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BB%BB%E5%8A%A1/</guid>
+      <description>分布式任务执行 1、每天较定时任务提前1小时生成令牌，保存至redis中
+redisTemplate.set(key,value,1,day);
+​ 执行定时任务时获取令牌，并移除令牌，value=redisTemplat.opsForValue().getAndSet(key,newValue);
+2、分布式锁执行定时任务
+​	分布式锁工具类获取锁、检查当天是否有统计过（redis判断），防止服务器时间差重复执行
+3、xxl-job
+调度中心、执行器解耦
+均支持分布式
+动态启动、停止任务、修改任务状态
+动态扩容
+&amp;hellip;
+思想：
+调度中心负责配置数据库、web的crud、报警邮箱、调度线程池配置、调度中心日志保存
+执行器负责填入调度中心的地址，多个以逗号隔开，执行器使用该地址进行‘执行器心跳注册和任务结果回调’，为空关闭注册，执行器appName、注册ip port，执行器日志保存路径及天数
+任务通讯流程 1、“调度中心”向“执行器”发送http调度请求: “执行器”中接收请求的服务，实际上是一台内嵌Server，默认端口9999; 2、“执行器”执行任务逻辑； 3、“执行器”http回调“调度中心”调度结果: “调度中心”中接收回调的服务，是针对执行器开放一套API服务; 代码核心逻辑 1、分布式环境保证只有一台实例执行采用数据库的方式：for update
+select * from xxl_job_lock where lock_name = &amp;#39;schedule_lock&amp;#39; for update 非spring管理的类获取spring管理的类
+@Component public class XxlJobAdminConfig implements InitializingBean { private static XxlJobAdminConfig adminConfig = null; public static XxlJobAdminConfig getAdminConfig() { return adminConfig; } @Override public void afterPropertiesSet() throws Exception { adminConfig = this; } XxlJobScheduler项目启动开始执行init方法，初始化以下内容</description>
+    </item>
+    
     <item>
       <title>First</title>
       <link>https://t-mac01.github.io/blog/post/first/</link>
